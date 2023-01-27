@@ -3,19 +3,9 @@ const router = express.Router();
 
 import { pool } from '../db';
 
-router.get('/', async (req, res) => {
-  try {
-    const response = await pool.query('SELECT * FROM shark');
+const transactions_controller = require('../controllers/transactions.controller');
 
-    return res.status(200).json({
-      success: true,
-      message: 'Successfully fetched shark table',
-      transactions: response.rows,
-    });
-  } catch (error) {
-    console.error('yahan aaya', error);
-  }
-});
+router.get('/', transactions_controller.get_transactions_get);
 
 router.post('/', async (req, res) => {
   try {
