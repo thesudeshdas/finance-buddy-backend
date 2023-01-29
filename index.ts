@@ -9,6 +9,7 @@ const PORT = process.env.PORT;
 
 // API rotues
 const transactionsRouter = require('./routes/transactions.route');
+const accountsRouter = require('./routes/accounts.route');
 
 // app.get('/', (req: Request, res: Response) => {
 //   res.send('Express + TypeScript Server');
@@ -25,6 +26,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/transactions', transactionsRouter);
+app.use('/accounts', accountsRouter);
 
 app.listen(PORT, () => {
   console.log(`[server]: Server is running at http://localhost:${PORT}`);
