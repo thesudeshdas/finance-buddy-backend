@@ -15,7 +15,11 @@ exports.get_accounts_get = async (req: Request, res: Response) => {
       accounts: response.rows,
     });
   } catch (error) {
-    console.log('kuch accounts kla error', { error });
+    return res.status(500).json({
+      success: false,
+      message: 'Some server error while retrieving accounts',
+      error,
+    });
   }
 };
 
@@ -24,12 +28,12 @@ exports.add_account_post = async (req: Request, res: Response) => {
   try {
     const { account, userId } = req.body;
 
-    console.log({ account, userId });
-
     const query = `INSERT INTO accounts ("account", "user")
     VALUES ($1, $2) RETURNING *`;
 
-    const response = await pool.query(query, [account, userId]);
+    const values = [account, userId];
+
+    const response = await pool.query(query, values);
 
     return res.status(200).json({
       success: true,
@@ -37,8 +41,6 @@ exports.add_account_post = async (req: Request, res: Response) => {
       account: response.rows[0],
     });
   } catch (error) {
-    console.log({ error });
-
     return res.status(500).json({
       success: false,
       message: 'Some server error while adding an account',
@@ -47,6 +49,7 @@ exports.add_account_post = async (req: Request, res: Response) => {
   }
 };
 
+// delete account
 exports.delete_account_delete = async (req: Request, res: Response) => {
   try {
     const { accountToDelete } = req.body;
@@ -60,7 +63,6 @@ exports.delete_account_delete = async (req: Request, res: Response) => {
       message: 'Successfully deleted the account',
     });
   } catch (error) {
-    console.log({ error });
     return res.status(500).json({
       success: false,
       message: 'Some error whiule deleting account',
