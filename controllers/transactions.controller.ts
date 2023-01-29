@@ -6,7 +6,7 @@ import { pool } from '../db';
 exports.get_transactions_get = async (req: Request, res: Response) => {
   try {
     const query = `
-    SELECT transactions.t_id, transactions.amount, accounts.account, categories.category, transactions.type, users.name
+    SELECT transactions.t_id, transactions.amount, accounts.account, categories.category, transactions.type, users.name, transactions.date
     FROM transactions 
     JOIN accounts ON transactions.account = accounts.a_id
     JOIN users ON transactions.user = users.u_id 
@@ -32,15 +32,15 @@ exports.get_transactions_get = async (req: Request, res: Response) => {
 // add a transaction
 exports.add_transaction_post = async (req: Request, res: Response) => {
   try {
-    const { amount, account, category, user, type } = req.body;
+    const { amount, account, category, user, type, date } = req.body;
 
     const query = `
-    INSERT INTO transactions ("amount", "account", "category", "user", "type") 
-    VALUES ($1, $2, $3, $4, $5) 
+    INSERT INTO transactions ("amount", "account", "category", "user", "type", "date") 
+    VALUES ($1, $2, $3, $4, $5, $6) 
     RETURNING *
     `;
 
-    const values = [amount, account, category, user, type];
+    const values = [amount, account, category, user, type, date];
 
     const response = await pool.query(query, values);
 
