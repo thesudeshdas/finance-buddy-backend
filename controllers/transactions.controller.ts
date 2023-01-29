@@ -5,7 +5,13 @@ import { pool } from '../db';
 // get all transactions
 exports.get_transactions_get = async (req: Request, res: Response) => {
   try {
-    const response = await pool.query('SELECT * FROM shark');
+    const response = await pool.query(`
+    SELECT transactions.t_id, transactions.amount, accounts.account, categories.category, transactions.type, users.name
+    FROM transactions 
+    JOIN accounts ON transactions.account = accounts.a_id
+    JOIN users ON transactions.user = users.u_id 
+    JOIN categories ON transactions.category = categories.c_id
+    `);
 
     return res.status(200).json({
       success: true,
@@ -20,12 +26,12 @@ exports.get_transactions_get = async (req: Request, res: Response) => {
 // add a transaction
 exports.add_transaction_post = async (req: Request, res: Response) => {
   try {
-    const name = req.body.name;
-    const color = req.body.color;
+    const { amount, account, category, user, type } = req.body;
 
     const response = await pool.query(
-      `INSERT INTO shark (name, color) VALUES ($1, $2) RETURNING *`,
-      [name, color]
+      `INSERT INTO transactions ("amount", "account", "category", "user", "type") 
+      VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+      [amount, account, category, user, type]
     );
 
     return res.status(200).json({
