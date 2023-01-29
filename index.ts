@@ -1,5 +1,6 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
 
 // env var configs
 dotenv.config();
@@ -11,9 +12,8 @@ const PORT = process.env.PORT;
 const transactionsRouter = require('./routes/transactions.route');
 const accountsRouter = require('./routes/accounts.route');
 
-// app.get('/', (req: Request, res: Response) => {
-//   res.send('Express + TypeScript Server');
-// });
+// cors policy
+app.use(cors());
 
 // json
 app.use(express.json());
